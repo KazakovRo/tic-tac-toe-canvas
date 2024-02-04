@@ -1,4 +1,20 @@
-class Scene {
+import PlayerOne from './PlayerOne'
+import PlayerTwo from './PlayerTwo'
+
+export default class Scene {
+  canvas: any
+  context: any
+  nextGameButton: any
+  message: any
+  canvasWidth: any
+  canvasHeight: any
+  lineWidth: number
+  cellLength: number
+  currentSymbol: string
+  player1: PlayerOne
+  player2: PlayerTwo
+  grid: string[][]
+
   constructor() {
     this.canvas = document.querySelector('#game-canvas')
     this.context = this.canvas.getContext('2d')
@@ -58,7 +74,7 @@ class Scene {
     ]
   }
 
-  canvasClick(e) {
+  canvasClick(e: any) {
     const rectBoundings = this.canvas.getBoundingClientRect()
 
     const xClick = Math.round(e.clientX - rectBoundings.left)
@@ -94,57 +110,3 @@ class Scene {
     this.currentSymbol = 'X'
   }
 }
-
-class PlayerOne {
-  constructor(cellLength, ctx) {
-    this.cellLength = cellLength
-    this.ctx = ctx
-  }
-
-  drawXSymbol(x, y) {
-    const lineLimit = 25
-
-    const findCellStartX = Math.floor(x / this.cellLength) * this.cellLength
-    const findCellStartY = Math.floor(y / this.cellLength) * this.cellLength
-
-    this.xStart = findCellStartX
-    this.yStart = findCellStartY
-    this.xEnd = this.xStart + this.cellLength
-    this.yEnd = this.yStart + this.cellLength
-
-    this.ctx.lineWidth = 6
-    this.ctx.strokeStyle = 'black'
-    this.ctx.beginPath()
-    this.ctx.moveTo(this.xStart + lineLimit, this.yStart + lineLimit)
-    this.ctx.lineTo(this.xEnd - lineLimit, this.yEnd - lineLimit)
-    this.ctx.stroke()
-
-    this.ctx.beginPath()
-    this.ctx.moveTo(this.xStart + this.cellLength - lineLimit, this.yStart + lineLimit)
-    this.ctx.lineTo(this.xEnd - this.cellLength + lineLimit, this.yEnd - lineLimit)
-    this.ctx.stroke()
-  }
-}
-
-class PlayerTwo {
-  constructor(cellLength, ctx) {
-    this.cellLength = cellLength
-    this.ctx = ctx
-  }
-
-  drawCircleSymbol(x, y) {
-    const radius = this.cellLength / 3
-
-    const centerOfCellX = Math.floor(x / this.cellLength) * this.cellLength + this.cellLength / 2
-    const centerOfCellY = Math.floor(y / this.cellLength) * this.cellLength + this.cellLength / 2
-
-    this.ctx.lineWidth = 6
-    this.ctx.strokeStyle = 'red'
-    this.ctx.beginPath()
-    this.ctx.arc(centerOfCellX, centerOfCellY, radius, 0, 2 * Math.PI)
-    this.ctx.stroke()
-  }
-}
-
-const game = new Scene()
-game.init()

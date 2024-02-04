@@ -1,6 +1,6 @@
 * {
   font-family: 'Noto Sans', sans-serif;
-  background-color: rgba(240, 240, 240, 1);
+  background-color: rgb(255, 255, 255);
 }
 
 body {
@@ -18,12 +18,12 @@ body {
     margin: 10px;
 
     > h1 {
-        font-family: 'Noto Sans', sans-serif;
-        color: black;
-        text-align: center;
-        margin: 10px auto;
-        max-width: 360px;
-      }
+      font-family: 'Noto Sans', sans-serif;
+      color: black;
+      text-align: center;
+      margin: 10px auto;
+      max-width: 360px;
+    }
   }
 
   main {
