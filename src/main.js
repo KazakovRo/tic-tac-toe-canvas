@@ -90,8 +90,11 @@ class PlayerOne {
   drawXSymbol(x, y) {
     const lineLimit = 25
 
-    this.xStart = x
-    this.yStart = y
+    const findCellStartX = Math.floor(x / this.cellLength) * this.cellLength
+    const findCellStartY = Math.floor(y / this.cellLength) * this.cellLength
+
+    this.xStart = findCellStartX
+    this.yStart = findCellStartY
     this.xEnd = this.xStart + this.cellLength
     this.yEnd = this.yStart + this.cellLength
 
@@ -118,15 +121,13 @@ class PlayerTwo {
   drawCircleSymbol(x, y) {
     const radius = this.cellLength / 3
 
-    this.xStart = x
-    this.yStart = y
-    this.xEnd = this.xStart + this.cellLength
-    this.yEnd = this.yStart + this.cellLength
+    const centerOfCellX = Math.floor(x / this.cellLength) * this.cellLength + this.cellLength / 2
+    const centerOfCellY = Math.floor(y / this.cellLength) * this.cellLength + this.cellLength / 2
 
     this.ctx.lineWidth = 6
     this.ctx.strokeStyle = 'red'
     this.ctx.beginPath()
-    this.ctx.arc((this.xStart + this.xEnd) / 2, (this.yStart + this.yEnd) / 2, radius, 0, 2 * Math.PI)
+    this.ctx.arc(centerOfCellX, centerOfCellY, radius, 0, 2 * Math.PI)
     this.ctx.stroke()
   }
 }
