@@ -20,6 +20,7 @@ class Scene {
     this.player2 = new PlayerTwo(this.cellLength, this.context)
 
     this.canvas.addEventListener('click', this.canvasClick.bind(this))
+    this.nextGameButton.addEventListener('click', this.resetGame.bind(this))
   }
 
   drawGrid() {
@@ -84,6 +85,13 @@ class Scene {
     } else {
       this.currentSymbol = 'X'
     }
+  }
+
+  resetGame() {
+    this.setupGrid()
+    this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+    this.drawGrid()
+    this.currentSymbol = 'X'
   }
 }
 
