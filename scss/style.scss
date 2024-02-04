@@ -1,0 +1,64 @@
+* {
+  font-family: 'Noto Sans', sans-serif;
+  background-color: rgba(240, 240, 240, 1);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-wrap: wrap;
+
+  header {
+    display: block;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin: 10px;
+
+    > h1 {
+        font-family: 'Noto Sans', sans-serif;
+        color: black;
+        text-align: center;
+        margin: 10px auto;
+        max-width: 360px;
+      }
+  }
+
+  main {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    max-width: 500px;
+
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin: 10px;
+
+    canvas {
+      margin: 30px auto;
+      width: 100%;
+      max-width: 500px;
+      height: 100%;
+      max-height: 500px;
+    }
+
+    .reset {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 28px;
+      width: 165px;
+      height: 50px;
+      border-style: none;
+      border-radius: 2px;
+      background-color: rgba(63, 81, 181, 1);
+      color: white;
+    }
+
+    .message {
+      color: white;
+      font-size: 18px;
+      visibility: hidden;
+    }
+  }
+}
