@@ -9,14 +9,17 @@ class Scene {
     this.canvasHeight = this.canvas.height
     this.lineWidth = 3
     this.cellLength = (this.canvasWidth - this.lineWidth * 3) / 3
+
+    this.currentSymbol = 'X'
   }
 
   init() {
     this.drawGrid()
-    console.warn('canv', this.canvasWidth, this.canvasHeight)
-    // this.setupGrid()
+    this.setupGrid()
+    this.player1 = new PlayerOne(this.cellLength, this.context)
+    this.player2 = new PlayerTwo(this.cellLength, this.context)
 
-    // this.addListeners() // grid click + reset click
+    this.canvas.addEventListener('click', this.canvasClick.bind(this))
   }
 
   drawGrid() {
@@ -44,6 +47,87 @@ class Scene {
     this.context.moveTo(0, this.cellLength * 2)
     this.context.lineTo(this.canvasWidth, this.cellLength * 2)
     this.context.stroke()
+  }
+
+  setupGrid() {
+    this.grid = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ]
+  }
+
+  canvasClick(e) {
+    const rectBoundings = this.canvas.getBoundingClientRect()
+
+    const xClick = Math.round(e.clientX - rectBoundings.left)
+    const yClick = Math.round(e.clientY - rectBoundings.top)
+
+    if (this.currentSymbol === 'X') {
+      this.player1.drawXSymbol(xClick, yClick)
+      this.changeSymbol('X')
+    } else {
+      this.player2.drawCircleSymbol(xClick, yClick)
+      this.changeSymbol('O')
+    }
+  }
+
+  changeSymbol(prevSymbol) {
+    if (prevSymbol === 'X') {
+      this.currentSymbol = 'O'
+    } else {
+      this.currentSymbol = 'X'
+    }
+  }
+}
+
+class PlayerOne {
+  constructor(cellLength, ctx) {
+    this.cellLength = cellLength
+    this.ctx = ctx
+  }
+
+  drawXSymbol(x, y) {
+    const lineLimit = 25
+
+    this.xStart = x
+    this.yStart = y
+    this.xEnd = this.xStart + this.cellLength
+    this.yEnd = this.yStart + this.cellLength
+
+    this.ctx.lineWidth = 6
+    this.ctx.strokeStyle = 'black'
+    this.ctx.beginPath()
+    this.ctx.moveTo(this.xStart + lineLimit, this.yStart + lineLimit)
+    this.ctx.lineTo(this.xEnd - lineLimit, this.yEnd - lineLimit)
+    this.ctx.stroke()
+
+    this.ctx.beginPath()
+    this.ctx.moveTo(this.xStart + this.cellLength - lineLimit, this.yStart + lineLimit)
+    this.ctx.lineTo(this.xEnd - this.cellLength + lineLimit, this.yEnd - lineLimit)
+    this.ctx.stroke()
+  }
+}
+
+class PlayerTwo {
+  constructor(cellLength, ctx) {
+    this.cellLength = cellLength
+    this.ctx = ctx
+  }
+
+  drawCircleSymbol(x, y) {
+    const radius = this.cellLength / 3
+
+    this.xStart = x
+    this.yStart = y
+    this.xEnd = this.xStart + this.cellLength
+    this.yEnd = this.yStart + this.cellLength
+
+    this.ctx.lineWidth = 6
+    this.ctx.strokeStyle = 'red'
+    this.ctx.beginPath()
+    this.ctx.arc((this.xStart + this.xEnd) / 2, (this.yStart + this.yEnd) / 2, radius, 0, 2 * Math.PI)
+    this.ctx.stroke()
   }
 }
 
