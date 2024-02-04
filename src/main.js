@@ -63,17 +63,23 @@ class Scene {
     const xClick = Math.round(e.clientX - rectBoundings.left)
     const yClick = Math.round(e.clientY - rectBoundings.top)
 
-    if (this.currentSymbol === 'X') {
-      this.player1.drawXSymbol(xClick, yClick)
-      this.changeSymbol('X')
-    } else {
-      this.player2.drawCircleSymbol(xClick, yClick)
-      this.changeSymbol('O')
+    const col = Math.floor(xClick / this.cellLength)
+    const row = Math.floor(yClick / this.cellLength)
+
+    if (this.grid[col][row] === '') {
+      if (this.currentSymbol === 'X') {
+        this.player1.drawXSymbol(xClick, yClick)
+      } else {
+        this.player2.drawCircleSymbol(xClick, yClick)
+      }
+
+      this.grid[col][row] = this.currentSymbol
+      this.changeSymbol()
     }
   }
 
-  changeSymbol(prevSymbol) {
-    if (prevSymbol === 'X') {
+  changeSymbol() {
+    if (this.currentSymbol === 'X') {
       this.currentSymbol = 'O'
     } else {
       this.currentSymbol = 'X'
