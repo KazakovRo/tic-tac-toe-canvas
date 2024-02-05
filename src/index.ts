@@ -1,6 +1,6 @@
 import Scene from './components/Scene'
 import './scss/styles.scss'
-import { sceneConfig } from './config'
+import { sceneConfig, themeConfig } from './config'
 
-const game = new Scene(sceneConfig)
+const game = new Scene(sceneConfig, themeConfig)
 game.init()

@@ -1,7 +1,9 @@
-import { TGameSymbols, IClickCoordinates, ISceneConfig, IPlayer } from '../types'
+import { IClickCoordinates, ISceneConfig, IThemeConfig } from '../types'
 import Player from './Player'
 
 export default class Scene {
+  cfg: ISceneConfig
+  tCfg: IThemeConfig
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
   nextGameButton: HTMLElement
@@ -15,68 +17,61 @@ export default class Scene {
   currentPlayer: number
   gameOver: boolean
 
-  constructor(cfg: ISceneConfig) {
-    this.canvas = document.querySelector(cfg.canvasSelector)
+  constructor(cfg: ISceneConfig, tCfg: IThemeConfig) {
+    this.cfg = cfg
+    this.tCfg = tCfg
+    this.canvas = document.querySelector(this.cfg.canvasSelector)
     this.context = this.canvas.getContext('2d')
-    this.nextGameButton = document.querySelector(cfg.nextBtnSelector)
-    this.message = document.querySelector(cfg.messageSelector)
+    this.nextGameButton = document.querySelector(this.cfg.nextBtnSelector)
+    this.message = document.querySelector(this.cfg.messageSelector)
     this.players = []
     this.currentPlayer = 0
     this.gameOver = false
 
     this.canvasWidth = this.canvas.width
     this.canvasHeight = this.canvas.height
-    this.lineWidth = 3
+    this.lineWidth = this.tCfg.GRID_LINE_WIDTH
     this.cellLength = (this.canvasWidth - this.lineWidth * 3) / 3
   }
 
-  init(): void {
+  public init(): void {
     this.drawGrid()
     this.setupGrid()
 
-    this.players.push(new Player(this.cellLength, this.context, 'X'))
-    this.players.push(new Player(this.cellLength, this.context, 'O'))
+    this.players.push(new Player(this.cellLength, this.context, 'X', this.cfg, this.tCfg))
+    this.players.push(new Player(this.cellLength, this.context, 'O', this.cfg, this.tCfg))
 
     this.canvas.addEventListener('click', this.canvasClick.bind(this))
     this.nextGameButton.addEventListener('click', this.resetGame.bind(this))
   }
 
-  drawGrid(): void {
-    this.context.strokeStyle = 'black'
-
-    this.context.beginPath()
+  private drawGrid(): void {
+    this.context.strokeStyle = this.tCfg.LINE_STYLE.lineColor
     this.context.lineWidth = this.lineWidth
 
-    this.context.moveTo(this.cellLength, 0)
-    this.context.lineTo(this.cellLength, this.canvasHeight)
-    this.context.stroke()
+    for (let i = 1; i < 3; i++) {
+      const x = this.cellLength * i
+      this.drawLine(x, 0, x, this.canvasHeight)
+    }
 
-    this.context.moveTo(this.cellLength * 2, 0)
-    this.context.lineTo(this.cellLength * 2, this.canvasHeight)
-    this.context.stroke()
+    for (let i = 1; i < 3; i++) {
+      const y = this.cellLength * i
+      this.drawLine(0, y, this.canvasWidth, y)
+    }
+  }
 
-    this.context.moveTo(this.cellLength * 2, 0)
-    this.context.lineTo(this.cellLength * 2, this.canvasHeight)
-    this.context.stroke()
-
-    this.context.moveTo(0, this.cellLength)
-    this.context.lineTo(this.canvasWidth, this.cellLength)
-    this.context.stroke()
-
-    this.context.moveTo(0, this.cellLength * 2)
-    this.context.lineTo(this.canvasWidth, this.cellLength * 2)
+  private drawLine(startX: number, startY: number, endX: number, endY: number): void {
+    this.context.beginPath()
+    this.context.moveTo(startX, startY)
+    this.context.lineTo(endX, endY)
     this.context.stroke()
   }
 
-  setupGrid(): void {
-    this.grid = [
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', '']
-    ]
+  private setupGrid(): void {
+    this.grid = Array(3).fill(null).map(() => Array(3).fill(''))
   }
 
-  getClickCoordinates(e: MouseEvent): IClickCoordinates {
+  private getClickCoordinates(e: MouseEvent): IClickCoordinates {
     const rectBoundings = this.canvas.getBoundingClientRect()
 
     const xClick = Math.round(e.clientX - rectBoundings.left)
@@ -85,7 +80,7 @@ export default class Scene {
     return { xClick, yClick }
   }
 
-  canvasClick(e: MouseEvent): void {
+  private canvasClick(e: MouseEvent): void {
     const { xClick, yClick } = this.getClickCoordinates(e)
 
     const col = Math.floor(xClick / this.cellLength)
@@ -93,8 +88,7 @@ export default class Scene {
 
     if (!this.gameOver && this.grid[col][row] === '') {
       this.grid[col][row] = this.players[this.currentPlayer].symbol
-      this.players[this.currentPlayer].chooseSymbol(xClick, yClick)
-      console.warn('111', this.grid);
+      this.players[this.currentPlayer].makeMove(xClick, yClick)
 
       this.gameOver = this.checkForWinner()
 
@@ -106,7 +100,7 @@ export default class Scene {
     }
   }
 
-  checkForWinner(): boolean {
+  private checkForWinner(): boolean {
     for (let row = 0; row < 3; row++) {
       if (this.checkRow(row)) {
         this.displayWin(this.players[this.currentPlayer].symbol)
@@ -134,7 +128,7 @@ export default class Scene {
     return false
   }
 
-  checkRow(row: number): boolean {
+  private checkRow(row: number): boolean {
     return (
       this.grid[row][0] !== '' &&
       this.grid[row][0] === this.grid[row][1] &&
@@ -142,7 +136,7 @@ export default class Scene {
     )
   }
 
-  checkColumn(col: number): boolean {
+  private checkColumn(col: number): boolean {
     return (
       this.grid[0][col] !== '' &&
       this.grid[0][col] === this.grid[1][col] &&
@@ -150,7 +144,7 @@ export default class Scene {
     )
   }
 
-  checkDiagonal(startRow: number, startCol: number, rowStep: number, colStep: number): boolean {
+  private checkDiagonal(startRow: number, startCol: number, rowStep: number, colStep: number): boolean {
     const symbol = this.grid[startRow][startCol]
 
     return (
@@ -160,11 +154,11 @@ export default class Scene {
     )
   }
 
-  checkDraw(): boolean {
+  private checkDraw(): boolean {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (this.grid[i][j] === '') {
-          return false;
+          return false
         }
       }
     }
@@ -172,7 +166,7 @@ export default class Scene {
     return true
   }
 
-  displayWin(winSymbol: string) {
+  private displayWin(winSymbol: string) {
     if (winSymbol == 'X') {
       this.message.textContent = `Player with ${winSymbol} win!`
     } else if (winSymbol == 'O') {
@@ -182,7 +176,7 @@ export default class Scene {
     }
   }
 
-  resetGame(): void {
+  private resetGame(): void {
     this.setupGrid()
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
     this.drawGrid()

@@ -1,6 +1,15 @@
+$font-primary: 'Noto Sans', sans-serif;
+$color-background: rgb(255, 255, 255);
+$color-text: black;
+$color-border: #ccc;
+$color-button-background: rgba(63, 81, 181, 1);
+$color-button-text: white;
+$spacing-standard: 20px;
+$border-standard: 1px solid $color-border;
+
 * {
-  font-family: 'Noto Sans', sans-serif;
-  background-color: rgb(255, 255, 255);
+  font-family: $font-primary;
+  background-color: $color-background;
 }
 
 body {
@@ -10,55 +19,51 @@ body {
   align-items: center;
   height: 100vh;
   flex-wrap: wrap;
+}
 
-  header {
-    display: block;
-    padding: 20px;
-    border: 1px solid #ccc;
-    margin: 10px;
+header {
+  display: block;
+  padding: $spacing-standard;
+  border: $border-standard;
+  margin: 10px;
 
-    > h1 {
-      font-family: 'Noto Sans', sans-serif;
-      color: black;
-      text-align: center;
-      margin: 10px auto;
-      max-width: 360px;
-    }
+  >h1 {
+    color: $color-text;
+    text-align: center;
+    margin: 10px auto;
+    max-width: 360px;
+  }
+}
+
+main {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  max-width: 500px;
+  padding: $spacing-standard;
+  border: $border-standard;
+  margin: 10px;
+
+  #game-canvas {
+    margin: 30px auto;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    max-height: 500px;
   }
 
-  main {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    max-width: 500px;
+  #next-game {
+    font-size: 28px;
+    width: 200px;
+    height: 50px;
+    border-style: none;
+    border-radius: 2px;
+    background-color: $color-button-background;
+    color: $color-button-text;
+  }
 
-    padding: 20px;
-    border: 1px solid #ccc;
-    margin: 10px;
-
-    #game-canvas {
-      margin: 30px auto;
-      width: 100%;
-      max-width: 500px;
-      height: 100%;
-      max-height: 500px;
-    }
-
-    #next-game {
-      font-family: 'Noto Sans', sans-serif;
-      font-size: 28px;
-      width: 200px;
-      height: 50px;
-      border-style: none;
-      border-radius: 2px;
-      background-color: rgba(63, 81, 181, 1);
-      color: white;
-    }
-
-    #message {
-      color: black;
-      font-size: 18px;
-      // visibility: hidden;
-    }
+  #message {
+    color: $color-text;
+    font-size: 18px;
   }
 }
